@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Casa del Trabajador en Salud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 md:p-8 font-sans">
+
+    <div class="w-full max-w-2xl bg-white rounded-none shadow-2xl overflow-hidden border border-gray-300">
+        
+        <!-- Encabezado Negro -->
+        <div class="bg-black px-6 py-8 md:px-10 md:py-10">
+            <h1 class="text-xl md:text-2xl font-black text-white text-center uppercase tracking-wider leading-snug">
+                Registro de Participantes a la Visita de la <br class="hidden md:block"> 
+                <span class="text-gray-300 border-b-2 border-white pb-1">Casa del Trabajador en Salud</span> <br class="hidden md:block">
+                del Departamento de La Paz
+            </h1>
+        </div>
+        
+        <!-- Formulario -->
+        <form id="registroForm" class="p-6 md:p-10 space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Número de Carnet -->
+                <div class="md:col-span-2">
+                    <label for="ci" class="block text-xs md:text-sm font-bold text-gray-800 uppercase tracking-wide">Número de Carnet</label>
+                    <input type="text" id="ci" name="ci" required autocomplete="off"
+                        class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-black focus:border-black outline-none uppercase transition-all"
+                        oninput="this.value = this.value.toUpperCase()">
+                </div>
+
+                <!-- Apellido Paterno -->
+                <div>
+                    <label for="paterno" class="block text-xs md:text-sm font-bold text-gray-800 uppercase tracking-wide">Apellido Paterno</label>
+                    <input type="text" id="paterno" name="paterno" required autocomplete="off"
+                        class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-black focus:border-black outline-none uppercase transition-all"
+                        oninput="this.value = this.value.toUpperCase()">
+                </div>
+
+                <!-- Apellido Materno -->
+                <div>
+                    <label for="materno" class="block text-xs md:text-sm font-bold text-gray-800 uppercase tracking-wide">Apellido Materno</label>
+                    <input type="text" id="materno" name="materno" required autocomplete="off"
+                        class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-black focus:border-black outline-none uppercase transition-all"
+                        oninput="this.value = this.value.toUpperCase()">
+                </div>
+
+                <!-- Nombres -->
+                <div class="md:col-span-2">
+                    <label for="nombres" class="block text-xs md:text-sm font-bold text-gray-800 uppercase tracking-wide">Nombres</label>
+                    <input type="text" id="nombres" name="nombres" required autocomplete="off"
+                        class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 focus:bg-white focus:ring-2 focus:ring-black focus:border-black outline-none uppercase transition-all"
+                        oninput="this.value = this.value.toUpperCase()">
+                </div>
+            </div>
+
+            <!-- Botón de Envío -->
+            <div class="pt-4">
+                <button type="submit" id="submitBtn"
+                    class="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 uppercase tracking-widest transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    Registrar Datos
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registroForm');
+        
+        // ¡IMPORTANTE! Reemplaza con la URL de tu Web App de Google Apps Script
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxuexCPCGB-3wjzJVe75adOjGmYjeT26PFt1qrAQjowBHfMT5ULvUJ60HLJuhWMU2nc/exec'; 
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            // 1. Mostrar SweetAlert2 para verificar datos (Tema Blanco y Negro)
+            Swal.fire({
+                title: 'VERIFICACIÓN DE DATOS',
+                html: `
+                    <div class="text-left space-y-3 mt-4 text-gray-800 bg-gray-50 p-4 border border-gray-200">
+                        <p class="border-b border-gray-200 pb-2"><strong class="text-black">CI:</strong> <span>${dataObj.ci}</span></p>
+                        <p class="border-b border-gray-200 pb-2"><strong class="text-black">PATERNO:</strong> <span>${dataObj.paterno}</span></p>
+                        <p class="border-b border-gray-200 pb-2"><strong class="text-black">MATERNO:</strong> <span>${dataObj.materno}</span></p>
+                        <p><strong class="text-black">NOMBRES:</strong> <span>${dataObj.nombres}</span></p>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500 font-medium">¿Confirma que la información es correcta?</p>
+                `,
+                icon: 'warning',
+                iconColor: '#000000',
+                showCancelButton: true,
+                confirmButtonColor: '#000000', // Negro
+                cancelButtonColor: '#9ca3af',  // Gris
+                confirmButtonText: 'SÍ, REGISTRAR',
+                cancelButtonText: 'CANCELAR',
+                customClass: {
+                    title: 'text-xl font-bold uppercase text-black',
+                    popup: 'rounded-none border-2 border-black'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                    // 2. Mostrar estado de carga
+                    Swal.fire({
+                        title: 'PROCESANDO...',
+                        text: 'Guardando registro en el sistema.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // 3. Enviar datos (Usando URLSearchParams)
+                    fetch(scriptURL, { 
+                        method: 'POST', 
+                        body: new URLSearchParams(formData) 
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Error en la respuesta de red');
+                        return response.text();
+                    })
+                    .then(data => {
+                        // 4. Mostrar alerta de éxito
+                        Swal.fire({
+                            title: '¡REGISTRO EXITOSO!',
+                            text: 'El participante ha sido registrado correctamente.',
+                            icon: 'success',
+                            iconColor: '#000000',
+                            confirmButtonColor: '#000000',
+                            confirmButtonText: 'ACEPTAR',
+                            customClass: {
+                                popup: 'rounded-none border-2 border-black'
+                            }
+                        });
+                        form.reset(); // Limpiar el formulario
+                    })
+                    .catch(error => {
+                        // 5. Mostrar alerta de error
+                        console.error('Error!', error.message);
+                        Swal.fire({
+                            title: 'ERROR DE CONEXIÓN',
+                            text: 'No se pudo guardar el registro. Verifique la conexión.',
+                            icon: 'error',
+                            confirmButtonColor: '#000000',
+                            confirmButtonText: 'CERRAR',
+                            customClass: {
+                                popup: 'rounded-none border-2 border-black'
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
